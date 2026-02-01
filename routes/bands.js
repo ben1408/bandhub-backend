@@ -13,6 +13,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET /api/bands/top - Get top 5 bands by average listeners
+// MUST be before /:id route to avoid "top" being treated as an ID
+router.get('/top', async (req, res) => {
+    try {
+        const topBands = await bandService.getTopBands();
+        res.json(topBands);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const band = await bandService.getBandById(req.params.id);
