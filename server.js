@@ -46,11 +46,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps, curl, etc.) only in development
+        // Allow requests with no origin (like mobile apps, curl, Postman, server-to-server)
         if (!origin) {
-            if (isProduction) {
-                return callback(new Error('Origin required'));
-            }
             return callback(null, true);
         }
 
@@ -79,7 +76,11 @@ app.use(cors({
 
 // Security middleware
 app.use(helmet()); // Adds security headers
-app.use(mongoSanitize()); // Prevent NoSQL injection
+
+// FIXED: Express 5.x compatibility - use replaceWith option
+app.use(mongoSanitize({
+    replaceWith: '_'  // Replace prohibited characters with underscore instead of modifying query object
+})); // Prevent NoSQL injection
 
 // Rate limiting
 const limiter = rateLimit({
