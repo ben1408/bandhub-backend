@@ -76,11 +76,7 @@ app.use(cors({
 
 // Security middleware
 app.use(helmet()); // Adds security headers
-
-// FIXED: Express 5.x compatibility - use replaceWith option
-app.use(mongoSanitize({
-    replaceWith: '_'  // Replace prohibited characters with underscore instead of modifying query object
-})); // Prevent NoSQL injection
+app.use(mongoSanitize()); // Prevent NoSQL injection - works with Express 4.x
 
 // Rate limiting
 const limiter = rateLimit({
