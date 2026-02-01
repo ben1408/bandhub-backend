@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "seed": "node seed.js",
+        "generate-articles": "node generateArticles.js",
+        "seed-all": "npm run seed && npm run generate-articles"
+    }
+}

@@ -1,0 +1,7 @@
+// Backend folder structure for organization
+controllers
+models
+routes
+middleware
+utils
+config
