@@ -21,6 +21,10 @@ if (!process.env.MONGO_URI) {
 
 const app = express();
 
+// Trust proxy - REQUIRED for Render/Heroku/behind reverse proxy
+// This allows rate limiter to see real IP addresses
+app.set('trust proxy', 1);
+
 // CORS setup for development and production
 const allowedOrigins = [
     'http://localhost:5173',
@@ -81,7 +85,7 @@ app.use(mongoSanitize()); // Prevent NoSQL injection - works with Express 4.x
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 1000, // INCREASED: limit each IP to 1000 requests per windowMs (was 100)
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -89,7 +93,7 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // limit each IP to 5 login attempts per windowMs
+    max: 20, // INCREASED: limit each IP to 20 login attempts per windowMs (was 5)
     message: 'Too many login attempts, please try again later.',
     skipSuccessfulRequests: true, // Don't count successful requests
 });
