@@ -32,7 +32,8 @@ router.post('/', adminAuth, async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+// FIXED: Added adminAuth protection
+router.put('/:id', adminAuth, async (req, res) => {
     try {
         const updatedBand = await bandService.updateBand(req.params.id, req.body);
         if (!updatedBand) return res.status(404).json({ message: 'Band not found' });

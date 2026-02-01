@@ -1,6 +1,5 @@
 const express = require('express');
 const userService = require('../services/userService');
-// const auth = require('../middleware/auth');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 
@@ -17,7 +16,8 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+// FIXED: Added adminAuth protection
+router.get('/', adminAuth, async (req, res) => {
     try {
         const users = await userService.getAllUsers();
         res.json(users);
@@ -97,7 +97,8 @@ router.put('/update-role/:userId', adminAuth, async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+// FIXED: Added adminAuth - only admins can update other users
+router.put('/:id', adminAuth, async (req, res) => {
     try {
         const updatedUser = await userService.updateUser(req.params.id, req.body);
         if (!updatedUser) return res.status(404).json({ message: 'User not found' });
@@ -107,7 +108,8 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+// FIXED: Added adminAuth - only admins can delete users
+router.delete('/:id', adminAuth, async (req, res) => {
     try {
         const user = await userService.deleteUser(req.params.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
